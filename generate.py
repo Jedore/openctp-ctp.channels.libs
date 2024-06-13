@@ -32,6 +32,7 @@ def gen_html(filename: str, title: str, contents: list):
         f'<h1>Index of {title}</h1>',
         '<h4>Author: <a href="https://github.com/Jedore" target="_black">Jedore</a></h4>',
         '<hr><pre>',
+        '<a href="/">/</a>\n',
         '<a href="../">../</a>',
     ]
     tails = [
