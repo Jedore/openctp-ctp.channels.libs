@@ -15,9 +15,10 @@ def traverse_dll(root_dir: str):
             if name == 'index.html':
                 continue
 
-            md5()
+            with open(os.path.join(dir_path, name), 'rb') as f:
+                md5_string = md5(f.read()).hexdigest()
 
-            line = f'\n<a href="{name}">{name}</a>'
+            line = f'\n<a href="{name}">{name}</a> {" " * (52 - len(name))}{md5_string}'
             contents.append(line)
 
         gen_html(os.path.join(dir_path, 'index.html'), dir_path.replace('\\', '/'), contents)
