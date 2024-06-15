@@ -12,7 +12,7 @@ def traverse_dll(root_dir: str):
             contents.append(line)
 
         for name in file_names:
-            if name == 'index.html':
+            if name == 'index.html' or name == 'favicon.png':
                 continue
 
             with open(os.path.join(dir_path, name), 'rb') as f:
@@ -29,10 +29,14 @@ def traverse_dll(root_dir: str):
 
 def gen_html(filename: str, title: str, contents: list):
     headers = [
-        '<html><head><title>openctp-ctp multi channels libs</title></head><body>',
-        f'<h1>Index of {title}</h1>',
-        '<h4>Author: <a href="https://github.com/Jedore" target="_black">Jedore</a></h4>',
-        '<hr><pre>',
+        '<html><head>\n',
+        '<title>openctp-ctp multi channels libs</title>\n',
+        f'<link rel="icon" href="/favicon.png">\n',
+        '</head>\n',
+        '<body>\n',
+        f'<h1>Index of {title}</h1>\n',
+        '<h4>Author: <a href="https://github.com/Jedore" target="_black">Jedore</a></h4>\n',
+        '<hr><pre>\n',
         '<a href="/">/</a>\n',
         '<a href="../">../</a>',
     ]
