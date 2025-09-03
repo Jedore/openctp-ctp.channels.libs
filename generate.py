@@ -1,11 +1,21 @@
 # Generate html files for channels.
 import os
+import shutil
 import time
 from hashlib import md5
+
+from natsort import natsorted
 
 
 def traverse_dll(root_dir: str):
     for dir_path, dir_names, file_names in os.walk(root_dir):
+        # 排序
+        dir_names = natsorted(dir_names)
+        file_names = natsorted(file_names)
+        # 过滤掉 lin64
+        if 'lin64' in dir_path:
+            continue
+
         contents = []
         for name in dir_names:
             line = f'\n<a href="{name}/">{name}</a>'
@@ -14,6 +24,16 @@ def traverse_dll(root_dir: str):
         for name in file_names:
             if name == 'index.html' or name == 'favicon.png':
                 continue
+
+            # 删除 lib 文件
+            if '.lib' in name:
+                os.remove(os.path.join(dir_path, name))
+                continue
+
+            # 添加 lib 前缀
+            if '.so' in name and 'lib' not in name:
+                shutil.move(os.path.join(dir_path, name), os.path.join(dir_path, 'lib' + name))
+                name = 'lib' + name
 
             with open(os.path.join(dir_path, name), 'rb') as f:
                 md5_string = md5(f.read()).hexdigest()
@@ -24,7 +44,12 @@ def traverse_dll(root_dir: str):
         gen_html(os.path.join(dir_path, 'index.html'), dir_path.replace('\\', '/'), contents)
 
         for name in dir_names:
-            traverse_dll(os.path.join(dir_path, name))
+            # lin64 改为 linux64
+            if name == 'lin64':
+                os.makedirs(os.path.join(dir_path, 'linux64'), exist_ok=True)
+                for file in os.listdir(os.path.join(dir_path, name)):
+                    shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', 'lib' + file))
+                # shutil.rmtree(os.path.join(dir_path, name))
 
 
 def gen_html(filename: str, title: str, contents: list):
