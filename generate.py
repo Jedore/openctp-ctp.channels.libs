@@ -18,6 +18,8 @@ def traverse_dll(root_dir: str):
 
         contents = []
         for name in dir_names:
+            if name == 'lin64':
+                continue
             line = f'\n<a href="{name}/">{name}</a>'
             contents.append(line)
 
@@ -48,7 +50,12 @@ def traverse_dll(root_dir: str):
             if name == 'lin64':
                 os.makedirs(os.path.join(dir_path, 'linux64'), exist_ok=True)
                 for file in os.listdir(os.path.join(dir_path, name)):
-                    shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', 'lib' + file))
+                    if '.so' not in file:
+                        continue
+                    if 'lib' not in file:
+                        shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', 'lib' + file))
+                    else:
+                        shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', file))
                 # shutil.rmtree(os.path.join(dir_path, name))
 
 
