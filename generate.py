@@ -12,14 +12,9 @@ def traverse_dll(root_dir: str):
         # 排序
         dir_names = natsorted(dir_names)
         file_names = natsorted(file_names)
-        # 过滤掉 lin64
-        if 'lin64' in dir_path:
-            continue
 
         contents = []
         for name in dir_names:
-            if name == 'lin64':
-                continue
             line = f'\n<a href="{name}/">{name}</a>'
             contents.append(line)
 
@@ -44,19 +39,6 @@ def traverse_dll(root_dir: str):
             contents.append(line)
 
         gen_html(os.path.join(dir_path, 'index.html'), dir_path.replace('\\', '/'), contents)
-
-        for name in dir_names:
-            # lin64 改为 linux64
-            if name == 'lin64':
-                os.makedirs(os.path.join(dir_path, 'linux64'), exist_ok=True)
-                for file in os.listdir(os.path.join(dir_path, name)):
-                    if '.so' not in file:
-                        continue
-                    if 'lib' not in file:
-                        shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', 'lib' + file))
-                    else:
-                        shutil.copy(os.path.join(dir_path, name, file), os.path.join(dir_path, 'linux64', file))
-                # shutil.rmtree(os.path.join(dir_path, name))
 
 
 def gen_html(filename: str, title: str, contents: list):
